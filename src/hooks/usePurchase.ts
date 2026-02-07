@@ -16,11 +16,23 @@ import {
 
 export type PurchaseStatus = 'idle' | 'approving' | 'purchasing' | 'success' | 'error';
 
+interface UsePurchaseOptions {
+  onSuccess?: (data: {
+    chainId: number;
+    paymentMethod: PaymentMethod;
+    amountPaid: number;
+    tokensReceived: number;
+    txHash: string | null;
+  }) => void;
+}
+
 interface UsePurchaseResult {
   status: PurchaseStatus;
   error: string | null;
   txHash: string | null;
   tokensReceived: number;
+  amountPaid: number;
+  currentPaymentMethod: PaymentMethod | null;
   purchase: (amount: string, paymentMethod: PaymentMethod) => Promise<void>;
   reset: () => void;
 }
@@ -34,7 +46,7 @@ const NATIVE_PRICES: Record<number, number> = {
   [bsc.id]: 600,      // BNB price in USD
 };
 
-export const usePurchase = (): UsePurchaseResult => {
+export const usePurchase = (options?: UsePurchaseOptions): UsePurchaseResult => {
   const { address } = useAccount();
   const chainId = useChainId();
   
@@ -42,6 +54,8 @@ export const usePurchase = (): UsePurchaseResult => {
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [tokensReceived, setTokensReceived] = useState(0);
+  const [amountPaid, setAmountPaid] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | null>(null);
 
   const { sendTransactionAsync } = useSendTransaction();
   const { writeContractAsync } = useWriteContract();
@@ -110,15 +124,28 @@ export const usePurchase = (): UsePurchaseResult => {
     }
 
     const tokens = calculateTokensReceived(amount, paymentMethod);
+    const numAmount = parseFloat(amount);
     setTokensReceived(tokens);
+    setAmountPaid(numAmount);
+    setPaymentMethod(paymentMethod);
 
     try {
       if (DEMO_MODE) {
         // Demo mode - simulate transaction
         setStatus('purchasing');
         await new Promise(resolve => setTimeout(resolve, 2000));
-        setTxHash('0x' + Math.random().toString(16).slice(2, 66));
+        const demoTxHash = '0x' + Math.random().toString(16).slice(2, 66);
+        setTxHash(demoTxHash);
         setStatus('success');
+        
+        // Call onSuccess callback
+        options?.onSuccess?.({
+          chainId,
+          paymentMethod,
+          amountPaid: numAmount,
+          tokensReceived: tokens,
+          txHash: demoTxHash,
+        });
         return;
       }
 
@@ -181,6 +208,8 @@ export const usePurchase = (): UsePurchaseResult => {
     setError(null);
     setTxHash(null);
     setTokensReceived(0);
+    setAmountPaid(0);
+    setPaymentMethod(null);
   }, []);
 
   return {
@@ -188,6 +217,8 @@ export const usePurchase = (): UsePurchaseResult => {
     error,
     txHash,
     tokensReceived,
+    amountPaid,
+    currentPaymentMethod: paymentMethod,
     purchase,
     reset,
   };

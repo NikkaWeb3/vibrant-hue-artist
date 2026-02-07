@@ -8,6 +8,7 @@ import { PartnersSlider } from "@/components/dashboard/PartnersSlider";
 import { ReferralTab } from "@/components/dashboard/ReferralTab";
 import { SettingsTab } from "@/components/dashboard/SettingsTab";
 import { ClaimModal } from "@/components/dashboard/ClaimModal";
+import { TransactionHistory } from "@/components/dashboard/TransactionHistory";
 import { Button } from "@/components/ui/button";
 import { Wallet, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -74,6 +75,9 @@ const Dashboard = () => {
             <div className="grid lg:grid-cols-2 gap-6 mt-6">
               <PurchaseWidget />
               <Leaderboard />
+            </div>
+            <div className="mt-6">
+              <TransactionHistory />
             </div>
           </>
         )}
