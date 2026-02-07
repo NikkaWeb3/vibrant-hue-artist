@@ -83,7 +83,7 @@ export const HeroSection = () => {
             {/* Stats */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-8">
               <div className="group">
-                <p className="text-3xl lg:text-4xl font-bold gradient-text group-hover:scale-110 transition-transform">
+                <p className="text-3xl lg:text-4xl font-bold text-foreground group-hover:scale-110 transition-transform">
                   <AnimatedCounter end={2} prefix="$" suffix="M+" duration={1500} />
                 </p>
                 <p className="text-sm text-muted-foreground">Target TVL</p>
