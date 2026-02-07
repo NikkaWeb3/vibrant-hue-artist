@@ -86,12 +86,15 @@ export const AnimatedCounter = ({
     ? count.toFixed(decimals) 
     : Math.floor(count).toLocaleString();
 
+  // Show the end value immediately if animation hasn't started yet, to prevent empty display
+  const displayValue = hasStarted ? formattedValue : (decimals > 0 ? end.toFixed(decimals) : Math.floor(end).toLocaleString());
+
   return (
     <span 
       ref={ref} 
-      className={`inline-block transition-all duration-500 ${hasStarted ? 'opacity-100 translate-y-0' : 'opacity-100'} ${className}`}
+      className={`inline-block ${className}`}
     >
-      {prefix}{hasStarted ? formattedValue : '0'}{suffix}
+      {prefix}{displayValue}{suffix}
     </span>
   );
 };
