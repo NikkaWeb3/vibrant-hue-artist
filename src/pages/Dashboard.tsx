@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAccount, useDisconnect } from 'wagmi';
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { StatsCards } from "@/components/dashboard/StatsCards";
 import { PurchaseWidget } from "@/components/dashboard/PurchaseWidget";
@@ -10,11 +11,13 @@ import { ClaimModal } from "@/components/dashboard/ClaimModal";
 import { Button } from "@/components/ui/button";
 import { Wallet, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 
 type TabType = "dashboard" | "referral" | "settings";
 
 const Dashboard = () => {
-  const [isConnected, setIsConnected] = useState(false);
+  const { isConnected, address } = useAccount();
+  const { disconnect } = useDisconnect();
   const [activeTab, setActiveTab] = useState<TabType>("dashboard");
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -30,12 +33,7 @@ const Dashboard = () => {
           <p className="text-muted-foreground mb-6">
             Connect your wallet to access your dashboard, view your tokens, and manage your referrals.
           </p>
-          <Button
-            onClick={() => setIsConnected(true)}
-            className="w-full h-12 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold hover:opacity-90 transition-opacity"
-          >
-            Connect Wallet
-          </Button>
+          <ConnectWalletButton variant="presale" />
           <Link to="/" className="block mt-4 text-sm text-muted-foreground hover:text-foreground transition-colors">
             ← Back to Home
           </Link>
@@ -61,6 +59,8 @@ const Dashboard = () => {
         onClaimClick={() => setShowClaimModal(true)}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        walletAddress={address}
+        onDisconnect={disconnect}
       />
 
       {/* Main Content */}

@@ -10,6 +10,8 @@ interface DashboardSidebarProps {
   onClaimClick: () => void;
   isOpen: boolean;
   onClose: () => void;
+  walletAddress?: string;
+  onDisconnect?: () => void;
 }
 
 const menuItems = [
@@ -17,12 +19,19 @@ const menuItems = [
   { id: "referral" as TabType, label: "Referral Program", icon: Users },
 ];
 
+const formatAddress = (address?: string) => {
+  if (!address) return "0x0000...0000";
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
 export const DashboardSidebar = ({
   activeTab,
   onTabChange,
   onClaimClick,
   isOpen,
   onClose,
+  walletAddress,
+  onDisconnect,
 }: DashboardSidebarProps) => {
   return (
     <>
@@ -101,10 +110,16 @@ export const DashboardSidebar = ({
             <div className="flex items-center gap-3 px-4 py-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary to-secondary" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">0x1234...5678</p>
+                <p className="text-sm font-medium text-sidebar-foreground truncate">
+                  {formatAddress(walletAddress)}
+                </p>
                 <p className="text-xs text-sidebar-foreground/50">Connected</p>
               </div>
-              <button className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors">
+              <button 
+                onClick={onDisconnect}
+                className="p-2 hover:bg-sidebar-accent rounded-lg transition-colors"
+                title="Disconnect wallet"
+              >
                 <LogOut className="w-4 h-4 text-sidebar-foreground/50" />
               </button>
             </div>
