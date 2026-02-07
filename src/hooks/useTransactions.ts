@@ -74,19 +74,21 @@ export const useTransactions = (): UseTransactionsResult => {
     if (!address) return;
 
     try {
-      const { error: insertError } = await supabase
-        .from('transactions')
-        .insert({
-          wallet_address: address.toLowerCase(),
-          chain_id: data.chainId,
-          payment_method: data.paymentMethod,
-          amount_paid: data.amountPaid,
-          tokens_received: data.tokensReceived,
-          tx_hash: data.txHash,
+      // Call edge function to save transaction (bypasses RLS with service role)
+      const { data: result, error: invokeError } = await supabase.functions.invoke('save-transaction', {
+        body: {
+          chainId: data.chainId,
+          walletAddress: address,
+          paymentMethod: data.paymentMethod,
+          amountPaid: data.amountPaid,
+          tokensReceived: data.tokensReceived,
+          txHash: data.txHash,
           status: data.status,
-        });
+        },
+      });
 
-      if (insertError) throw insertError;
+      if (invokeError) throw invokeError;
+      if (result?.error) throw new Error(result.error);
 
       // Refetch to get the latest data
       await fetchTransactions();
