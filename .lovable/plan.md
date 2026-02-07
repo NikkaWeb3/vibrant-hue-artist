@@ -1,70 +1,34 @@
 
-# План: Сделать таймер компактным как на референсе
+# План: Расширить карточку Presale
 
-## Текущее состояние
+## Проблема
 
-Таймер отображается как 4 отдельных блока с крупным текстом:
+Карточка Presale имеет `max-w-md` (448px), но визуально смотрится узко. На референсе виден более сбалансированный размер.
 
-```text
-┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐
-│  14  │ │  23  │ │  59  │ │  59  │
-│ days │ │hours │ │ min  │ │ sec  │
-└──────┘ └──────┘ └──────┘ └──────┘
-```
+## Решение
 
-## Новый дизайн (как на референсе)
-
-Компактный таймер в одну строку с разделителями:
-
-```text
-┌────────────────────────────────┐
-│    14d : 23h : 59m : 59s       │
-└────────────────────────────────┘
-```
+Увеличить максимальную ширину карточки с `max-w-md` на `max-w-[420px]` или `max-w-lg` (512px) для более комфортного отображения.
 
 ## Технические изменения
 
 ### Файл: `src/components/PresaleCard.tsx`
 
-Заменить секцию таймера (строки 205-215):
+Заменить во всех состояниях (idle, success, error) класс `max-w-md` на `max-w-[420px]`:
+
+**Строки:** 137, 170, 189
 
 **Было:**
-- Grid из 4 колонок с отдельными блоками
-- Крупный текст (text-2xl lg:text-3xl)
-- Подписи под каждым числом
+```tsx
+<div className="glass-card p-6 lg:p-8 w-full max-w-md">
+```
 
 **Станет:**
-- Один контейнер с flexbox
-- Компактный текст (text-lg или text-xl)
-- Формат: `14d : 23h : 59m : 59s`
-- Стилизация с градиентным/золотистым акцентом как на референсе
-
-### Примерный код нового таймера
-
 ```tsx
-{/* Countdown - Compact style */}
-<div className="flex items-center justify-center gap-1 mb-6 py-3 px-4 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
-  <span className="text-lg font-bold text-foreground">
-    {timeLeft.days.toString().padStart(2, "0")}d
-  </span>
-  <span className="text-primary/60">:</span>
-  <span className="text-lg font-bold text-foreground">
-    {timeLeft.hours.toString().padStart(2, "0")}h
-  </span>
-  <span className="text-primary/60">:</span>
-  <span className="text-lg font-bold text-foreground">
-    {timeLeft.minutes.toString().padStart(2, "0")}m
-  </span>
-  <span className="text-primary/60">:</span>
-  <span className="text-lg font-bold text-foreground">
-    {timeLeft.seconds.toString().padStart(2, "0")}s
-  </span>
-</div>
+<div className="glass-card p-6 lg:p-8 w-full max-w-[420px]">
 ```
 
 ## Результат
 
-- Таймер занимает меньше места
-- Выглядит более современно и premium
-- Соответствует референсу с Dribbble
-- Освобождает пространство для остального контента
+- Карточка станет немного шире и сбалансированнее
+- Кнопки и инпуты будут иметь больше пространства
+- Улучшится читаемость на десктопе
