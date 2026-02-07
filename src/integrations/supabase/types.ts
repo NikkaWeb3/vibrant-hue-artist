@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      transactions: {
+        Row: {
+          amount_paid: number
+          chain_id: number
+          created_at: string
+          id: string
+          payment_method: string
+          status: string
+          tokens_received: number
+          tx_hash: string | null
+          updated_at: string
+          wallet_address: string
+        }
+        Insert: {
+          amount_paid: number
+          chain_id: number
+          created_at?: string
+          id?: string
+          payment_method: string
+          status?: string
+          tokens_received: number
+          tx_hash?: string | null
+          updated_at?: string
+          wallet_address: string
+        }
+        Update: {
+          amount_paid?: number
+          chain_id?: number
+          created_at?: string
+          id?: string
+          payment_method?: string
+          status?: string
+          tokens_received?: number
+          tx_hash?: string | null
+          updated_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

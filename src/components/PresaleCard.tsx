@@ -5,6 +5,7 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { mainnet, bsc } from 'wagmi/chains';
 import { ConnectWalletButton } from "./ConnectWalletButton";
 import { usePurchase } from "@/hooks/usePurchase";
+import { useTransactions } from "@/hooks/useTransactions";
 import { type PaymentMethod, SEQ_PER_USD } from "@/lib/presale";
 import { Loader2, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 
@@ -23,7 +24,25 @@ export const PresaleCard = () => {
   const { isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
-  const { status, error, txHash, tokensReceived, purchase, reset } = usePurchase();
+  const { saveTransaction } = useTransactions();
+  
+  const { status, error, txHash, tokensReceived, amountPaid, currentPaymentMethod, purchase, reset } = usePurchase({
+    onSuccess: async (data) => {
+      // Save transaction to database
+      try {
+        await saveTransaction({
+          chainId: data.chainId,
+          paymentMethod: data.paymentMethod,
+          amountPaid: data.amountPaid,
+          tokensReceived: data.tokensReceived,
+          txHash: data.txHash,
+          status: 'success',
+        });
+      } catch (err) {
+        console.error('Failed to save transaction:', err);
+      }
+    },
+  });
   
   const [selectedNetwork, setSelectedNetwork] = useState("eth");
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('native');
