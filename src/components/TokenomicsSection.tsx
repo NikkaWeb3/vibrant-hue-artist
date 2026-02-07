@@ -59,7 +59,10 @@ export const TokenomicsSection = () => {
                       backgroundColor: "hsl(150, 15%, 8%)",
                       border: "1px solid hsl(150, 10%, 20%)",
                       borderRadius: "8px",
+                      color: "hsl(80, 45%, 85%)",
                     }}
+                    labelStyle={{ color: "hsl(80, 45%, 85%)" }}
+                    itemStyle={{ color: "hsl(80, 45%, 85%)" }}
                     formatter={(value: number) => [`${value}%`, "Allocation"]}
                   />
                 </PieChart>
