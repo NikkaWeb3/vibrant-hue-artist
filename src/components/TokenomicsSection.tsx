@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { useRef, useState, useEffect } from "react";
 
 const tokenomicsData = [
   { name: "Public Sale", value: 40, color: "hsl(80, 45%, 60%)" },
@@ -17,6 +18,39 @@ const vestingSchedule = [
   { allocation: "Liquidity", tge: "100%", vesting: "Unlocked at TGE" },
   { allocation: "Advisors", tge: "0%", vesting: "6 months cliff, 18 months linear" },
 ];
+
+const AnimatedBlock = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setIsVisible(true), delay);
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ${
+        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
+      }`}
+    >
+      {children}
+    </div>
+  );
+};
 
 export const TokenomicsSection = () => {
   return (
@@ -37,93 +71,105 @@ export const TokenomicsSection = () => {
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Chart */}
-          <div className="glass-card p-8">
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={tokenomicsData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {tokenomicsData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(150, 15%, 8%)",
-                      border: "1px solid hsl(150, 10%, 20%)",
-                      borderRadius: "8px",
-                      color: "hsl(80, 45%, 85%)",
-                    }}
-                    labelStyle={{ color: "hsl(80, 45%, 85%)" }}
-                    itemStyle={{ color: "hsl(80, 45%, 85%)" }}
-                    formatter={(value: number) => [`${value}%`, "Allocation"]}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+          <AnimatedBlock>
+            <div className="glass-card p-8">
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={tokenomicsData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={120}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {tokenomicsData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "hsl(150, 15%, 8%)",
+                        border: "1px solid hsl(150, 10%, 20%)",
+                        borderRadius: "8px",
+                        color: "hsl(80, 45%, 85%)",
+                      }}
+                      labelStyle={{ color: "hsl(80, 45%, 85%)" }}
+                      itemStyle={{ color: "hsl(80, 45%, 85%)" }}
+                      formatter={(value: number) => [`${value}%`, "Allocation"]}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Legend */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
+                {tokenomicsData.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full flex-shrink-0"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-sm text-muted-foreground">
+                      {item.name} ({item.value}%)
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            {/* Legend */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-6">
-              {tokenomicsData.map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: item.color }}
-                  />
-                  <span className="text-sm text-muted-foreground">
-                    {item.name} ({item.value}%)
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          </AnimatedBlock>
 
           {/* Vesting Table */}
-          <div className="glass-card p-8">
-            <h3 className="text-xl font-bold text-foreground mb-6">Vesting Schedule</h3>
-            <div className="space-y-4">
-              {vestingSchedule.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-border/50 last:border-0"
-                >
-                  <div className="mb-2 sm:mb-0">
-                    <p className="font-medium text-foreground">{item.allocation}</p>
-                    <p className="text-sm text-muted-foreground">{item.vesting}</p>
+          <AnimatedBlock delay={150}>
+            <div className="glass-card p-8">
+              <h3 className="text-xl font-bold text-foreground mb-6">Vesting Schedule</h3>
+              <div className="space-y-4">
+                {vestingSchedule.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between py-3 border-b border-border/50 last:border-0"
+                  >
+                    <div className="mb-2 sm:mb-0">
+                      <p className="font-medium text-foreground">{item.allocation}</p>
+                      <p className="text-sm text-muted-foreground">{item.vesting}</p>
+                    </div>
+                    <div className="bg-primary/20 px-3 py-1 rounded-full">
+                      <span className="text-sm text-primary font-medium">TGE: {item.tge}</span>
+                    </div>
                   </div>
-                  <div className="bg-primary/20 px-3 py-1 rounded-full">
-                    <span className="text-sm text-primary font-medium">TGE: {item.tge}</span>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          </AnimatedBlock>
         </div>
 
         {/* Token Info */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-          <div className="glass-card p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-1">Token Name</p>
-            <p className="text-xl font-bold text-foreground">Sequoia Protocol</p>
-          </div>
-          <div className="glass-card p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-1">Symbol</p>
-            <p className="text-xl font-bold gradient-text">$SEQ</p>
-          </div>
-          <div className="glass-card p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-1">Total Supply</p>
-            <p className="text-xl font-bold text-foreground">1,000,000,000</p>
-          </div>
-          <div className="glass-card p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-1">Networks</p>
-            <p className="text-xl font-bold text-foreground">ETH, BNB, SOL</p>
-          </div>
+          <AnimatedBlock delay={0}>
+            <div className="glass-card p-6 text-center hover:border-primary/50 transition-colors">
+              <p className="text-sm text-muted-foreground mb-1">Token Name</p>
+              <p className="text-xl font-bold text-foreground">Sequoia Protocol</p>
+            </div>
+          </AnimatedBlock>
+          <AnimatedBlock delay={100}>
+            <div className="glass-card p-6 text-center hover:border-primary/50 transition-colors">
+              <p className="text-sm text-muted-foreground mb-1">Symbol</p>
+              <p className="text-xl font-bold gradient-text">$SEQ</p>
+            </div>
+          </AnimatedBlock>
+          <AnimatedBlock delay={200}>
+            <div className="glass-card p-6 text-center hover:border-primary/50 transition-colors">
+              <p className="text-sm text-muted-foreground mb-1">Total Supply</p>
+              <p className="text-xl font-bold text-foreground">1,000,000,000</p>
+            </div>
+          </AnimatedBlock>
+          <AnimatedBlock delay={300}>
+            <div className="glass-card p-6 text-center hover:border-primary/50 transition-colors">
+              <p className="text-sm text-muted-foreground mb-1">Networks</p>
+              <p className="text-xl font-bold text-foreground">ETH, BNB, SOL</p>
+            </div>
+          </AnimatedBlock>
         </div>
       </div>
     </section>
