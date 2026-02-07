@@ -202,16 +202,23 @@ export const PresaleCard = () => {
         <span className="text-xs font-medium text-foreground">ETH • BNB • USDT • USDC</span>
       </div>
 
-      {/* Countdown */}
-      <div className="grid grid-cols-4 gap-2 mb-6">
-        {Object.entries(timeLeft).map(([unit, value]) => (
-          <div key={unit} className="bg-muted/50 rounded-xl p-3 text-center">
-            <p className="text-2xl lg:text-3xl font-bold text-foreground">
-              {value.toString().padStart(2, "0")}
-            </p>
-            <p className="text-xs text-muted-foreground capitalize">{unit}</p>
-          </div>
-        ))}
+      {/* Countdown - Compact style */}
+      <div className="flex items-center justify-center gap-2 mb-6 py-3 px-4 rounded-xl bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30">
+        <span className="text-lg font-bold text-foreground">
+          {timeLeft.days.toString().padStart(2, "0")}d
+        </span>
+        <span className="text-primary/60 font-medium">:</span>
+        <span className="text-lg font-bold text-foreground">
+          {timeLeft.hours.toString().padStart(2, "0")}h
+        </span>
+        <span className="text-primary/60 font-medium">:</span>
+        <span className="text-lg font-bold text-foreground">
+          {timeLeft.minutes.toString().padStart(2, "0")}m
+        </span>
+        <span className="text-primary/60 font-medium">:</span>
+        <span className="text-lg font-bold text-foreground">
+          {timeLeft.seconds.toString().padStart(2, "0")}s
+        </span>
       </div>
 
       {/* Progress */}
