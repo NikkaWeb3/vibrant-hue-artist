@@ -188,12 +188,18 @@ export const PresaleCard = () => {
   return (
     <div className="glass-card p-6 lg:p-8 w-full max-w-md">
       {/* Phase Badge */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
           <span className="text-sm font-medium text-secondary">Phase 1 Active</span>
         </div>
         <span className="text-xs text-muted-foreground">1 $SEQ = $0.00008</span>
+      </div>
+
+      {/* Accepted Currencies Badge */}
+      <div className="flex items-center justify-center gap-1 mb-6 py-2 px-3 rounded-lg bg-muted/30 border border-border/50">
+        <span className="text-xs text-muted-foreground">Pay with</span>
+        <span className="text-xs font-medium text-foreground">ETH • BNB • USDT • USDC</span>
       </div>
 
       {/* Countdown */}
@@ -224,27 +230,37 @@ export const PresaleCard = () => {
       </div>
 
       {/* Network Selection */}
-      <div className="flex gap-2 mb-4">
-        {networks.map((network) => (
-          <button
-            key={network.id}
-            onClick={() => handleNetworkChange(network.id)}
-            disabled={status === 'purchasing' || status === 'approving'}
-            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
-              selectedNetwork === network.id
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
-            }`}
-          >
-            <span className="mr-1">{network.icon}</span>
-            {network.name}
-          </button>
-        ))}
+      <div className="mb-4">
+        <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+          <span className="w-4 h-4 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center font-medium">1</span>
+          Select Network
+        </p>
+        <div className="flex gap-2">
+          {networks.map((network) => (
+            <button
+              key={network.id}
+              onClick={() => handleNetworkChange(network.id)}
+              disabled={status === 'purchasing' || status === 'approving'}
+              className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
+                selectedNetwork === network.id
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              <span className="mr-1">{network.icon}</span>
+              {network.name}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Payment Method Selection */}
-      {isConnected && (
-        <div className="flex gap-2 mb-4">
+      {/* Payment Method Selection - Always visible */}
+      <div className="mb-4">
+        <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+          <span className="w-4 h-4 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center font-medium">2</span>
+          Pay With
+        </p>
+        <div className="flex gap-2">
           {paymentMethods.map((method) => (
             <button
               key={method.id}
@@ -260,7 +276,7 @@ export const PresaleCard = () => {
             </button>
           ))}
         </div>
-      )}
+      </div>
 
       {/* Amount Input */}
       <div className="space-y-3 mb-6">
