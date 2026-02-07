@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAccount, useChainId, useSwitchChain } from 'wagmi';
+import { mainnet, bsc } from 'wagmi/chains';
+import { ConnectWalletButton } from "./ConnectWalletButton";
 
 const networks = [
-  { id: "eth", name: "ETH", icon: "⟠" },
-  { id: "bnb", name: "BNB", icon: "◆" },
-  { id: "sol", name: "SOL", icon: "◎" },
+  { id: "eth", name: "ETH", icon: "⟠", chainId: mainnet.id },
+  { id: "bnb", name: "BNB", icon: "◆", chainId: bsc.id },
 ];
 
 export const PresaleCard = () => {
+  const { isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain } = useSwitchChain();
+  
   const [selectedNetwork, setSelectedNetwork] = useState("eth");
   const [amount, setAmount] = useState("");
   const [timeLeft, setTimeLeft] = useState({
@@ -17,6 +23,24 @@ export const PresaleCard = () => {
     minutes: 59,
     seconds: 59,
   });
+
+  // Sync network selection with connected chain
+  useEffect(() => {
+    if (isConnected) {
+      const network = networks.find(n => n.chainId === chainId);
+      if (network) {
+        setSelectedNetwork(network.id);
+      }
+    }
+  }, [chainId, isConnected]);
+
+  const handleNetworkChange = (networkId: string) => {
+    setSelectedNetwork(networkId);
+    const network = networks.find(n => n.id === networkId);
+    if (network && isConnected && switchChain) {
+      switchChain({ chainId: network.chainId });
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -85,7 +109,7 @@ export const PresaleCard = () => {
         {networks.map((network) => (
           <button
             key={network.id}
-            onClick={() => setSelectedNetwork(network.id)}
+            onClick={() => handleNetworkChange(network.id)}
             className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
               selectedNetwork === network.id
                 ? "bg-primary text-primary-foreground"
@@ -118,10 +142,17 @@ export const PresaleCard = () => {
         </div>
       </div>
 
-      {/* Buy Button */}
-      <Button className="w-full h-14 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-lg hover:opacity-90 transition-opacity">
-        Connect Wallet
-      </Button>
+      {/* Connect/Buy Button */}
+      {isConnected ? (
+        <Button 
+          className="w-full h-14 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-lg hover:opacity-90 transition-opacity"
+          disabled={!amount || parseFloat(amount) <= 0}
+        >
+          Buy $SEQ
+        </Button>
+      ) : (
+        <ConnectWalletButton variant="presale" />
+      )}
 
       {/* Info */}
       <p className="text-xs text-muted-foreground text-center mt-4">

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/logo.svg";
+import { ConnectWalletButton } from "./ConnectWalletButton";
 
 const navItems = [
   { label: "Pre-sale", href: "#presale", isAnchor: true },
@@ -80,12 +81,8 @@ export const Header = () => {
               </a>
             </div>
 
-            {/* Launch App Button */}
-            <Link to="/dashboard">
-              <Button className="bg-primary/20 text-primary border border-primary/30 font-semibold px-5 h-9 rounded-full hover:bg-primary hover:text-primary-foreground transition-all">
-                Launch App
-              </Button>
-            </Link>
+            {/* Connect Wallet Button */}
+            <ConnectWalletButton variant="header" />
 
             {/* Mobile Menu Button */}
             <button
