@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import logo from "@/assets/logo.svg";
 
 const navItems = [
   { label: "Pre-sale", href: "#presale", isAnchor: true },
@@ -36,10 +37,8 @@ export const Header = () => {
         <div className="flex items-center justify-between h-14 bg-card/90 backdrop-blur-xl border border-border/50 rounded-full px-4 lg:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">S</span>
-            </div>
-            <span className="font-bold text-lg text-foreground hidden sm:block">Sequoia</span>
+            <img src={logo} alt="Sequoia Protocol" className="w-8 h-8" />
+            <span className="font-bold text-foreground hidden sm:block">Sequoia Protocol</span>
           </Link>
 
           {/* Desktop Nav - Centered Pill */}
