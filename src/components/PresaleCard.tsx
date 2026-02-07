@@ -134,7 +134,7 @@ export const PresaleCard = () => {
   // Success state
   if (status === 'success') {
     return (
-    <div className="glass-card p-6 lg:p-8 w-full max-w-[420px]">
+    <div className="glass-card p-6 lg:p-8 w-full max-w-lg">
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-primary" />
@@ -167,7 +167,7 @@ export const PresaleCard = () => {
   // Error state
   if (status === 'error') {
     return (
-    <div className="glass-card p-6 lg:p-8 w-full max-w-[420px]">
+    <div className="glass-card p-6 lg:p-8 w-full max-w-lg">
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-destructive" />
@@ -186,7 +186,7 @@ export const PresaleCard = () => {
   }
 
   return (
-    <div className="glass-card p-6 lg:p-8 w-full max-w-[420px]">
+    <div className="glass-card p-6 lg:p-8 w-full max-w-lg">
       {/* Phase Badge */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
