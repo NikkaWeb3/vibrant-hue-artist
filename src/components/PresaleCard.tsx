@@ -4,18 +4,29 @@ import { Input } from "@/components/ui/input";
 import { useAccount, useChainId, useSwitchChain } from 'wagmi';
 import { mainnet, bsc } from 'wagmi/chains';
 import { ConnectWalletButton } from "./ConnectWalletButton";
+import { usePurchase } from "@/hooks/usePurchase";
+import { type PaymentMethod, SEQ_PER_USD } from "@/lib/presale";
+import { Loader2, CheckCircle, XCircle, ExternalLink } from "lucide-react";
 
 const networks = [
   { id: "eth", name: "ETH", icon: "⟠", chainId: mainnet.id },
   { id: "bnb", name: "BNB", icon: "◆", chainId: bsc.id },
 ];
 
+const paymentMethods: { id: PaymentMethod; label: string }[] = [
+  { id: 'native', label: 'Native' },
+  { id: 'usdt', label: 'USDT' },
+  { id: 'usdc', label: 'USDC' },
+];
+
 export const PresaleCard = () => {
   const { isConnected } = useAccount();
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
+  const { status, error, txHash, tokensReceived, purchase, reset } = usePurchase();
   
   const [selectedNetwork, setSelectedNetwork] = useState("eth");
+  const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('native');
   const [amount, setAmount] = useState("");
   const [timeLeft, setTimeLeft] = useState({
     days: 14,
@@ -33,6 +44,13 @@ export const PresaleCard = () => {
       }
     }
   }, [chainId, isConnected]);
+
+  // Update payment method label based on network
+  useEffect(() => {
+    if (selectedPayment === 'native') {
+      // Native is already handled by network selection
+    }
+  }, [selectedNetwork, selectedPayment]);
 
   const handleNetworkChange = (networkId: string) => {
     setSelectedNetwork(networkId);
@@ -64,7 +82,89 @@ export const PresaleCard = () => {
   const raised = 847520;
   const goal = 1500000;
   const progress = (raised / goal) * 100;
-  const seqAmount = parseFloat(amount || "0") * 12500;
+  
+  // Calculate tokens based on payment method
+  const calculateSeqAmount = () => {
+    const numAmount = parseFloat(amount || "0");
+    if (selectedPayment === 'native') {
+      // For native: ETH ~$3500, BNB ~$600
+      const nativePrice = selectedNetwork === 'eth' ? 3500 : 600;
+      return numAmount * nativePrice * SEQ_PER_USD;
+    }
+    // For stablecoins: 1:1 with USD
+    return numAmount * SEQ_PER_USD;
+  };
+
+  const seqAmount = calculateSeqAmount();
+
+  const getPaymentLabel = () => {
+    if (selectedPayment === 'native') {
+      return networks.find(n => n.id === selectedNetwork)?.name || 'ETH';
+    }
+    return selectedPayment.toUpperCase();
+  };
+
+  const handlePurchase = async () => {
+    await purchase(amount, selectedPayment);
+  };
+
+  const handleTryAgain = () => {
+    reset();
+  };
+
+  // Success state
+  if (status === 'success') {
+    return (
+      <div className="glass-card p-6 lg:p-8 w-full max-w-md">
+        <div className="text-center py-8">
+          <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-primary" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground mb-2">Purchase Successful!</h3>
+          <p className="text-muted-foreground mb-4">
+            You will receive <span className="text-primary font-semibold">{tokensReceived.toLocaleString()} $SEQ</span>
+          </p>
+          {txHash && (
+            <a 
+              href={`https://${selectedNetwork === 'bnb' ? 'bscscan.com' : 'etherscan.io'}/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm text-primary hover:underline mb-6"
+            >
+              View transaction <ExternalLink className="w-4 h-4" />
+            </a>
+          )}
+          <Button 
+            onClick={handleTryAgain}
+            className="w-full bg-gradient-to-r from-primary to-secondary text-primary-foreground"
+          >
+            Buy More
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (status === 'error') {
+    return (
+      <div className="glass-card p-6 lg:p-8 w-full max-w-md">
+        <div className="text-center py-8">
+          <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto mb-4">
+            <XCircle className="w-8 h-8 text-destructive" />
+          </div>
+          <h3 className="text-xl font-bold text-foreground mb-2">Transaction Failed</h3>
+          <p className="text-muted-foreground mb-6 text-sm">{error}</p>
+          <Button 
+            onClick={handleTryAgain}
+            className="w-full bg-gradient-to-r from-primary to-secondary text-primary-foreground"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="glass-card p-6 lg:p-8 w-full max-w-md">
@@ -110,7 +210,8 @@ export const PresaleCard = () => {
           <button
             key={network.id}
             onClick={() => handleNetworkChange(network.id)}
-            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all ${
+            disabled={status === 'purchasing' || status === 'approving'}
+            className={`flex-1 py-3 rounded-xl text-sm font-medium transition-all disabled:opacity-50 ${
               selectedNetwork === network.id
                 ? "bg-primary text-primary-foreground"
                 : "bg-muted/50 text-muted-foreground hover:bg-muted"
@@ -122,6 +223,26 @@ export const PresaleCard = () => {
         ))}
       </div>
 
+      {/* Payment Method Selection */}
+      {isConnected && (
+        <div className="flex gap-2 mb-4">
+          {paymentMethods.map((method) => (
+            <button
+              key={method.id}
+              onClick={() => setSelectedPayment(method.id)}
+              disabled={status === 'purchasing' || status === 'approving'}
+              className={`flex-1 py-2 rounded-lg text-xs font-medium transition-all disabled:opacity-50 ${
+                selectedPayment === method.id
+                  ? "bg-secondary/20 text-secondary border border-secondary/30"
+                  : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
+              }`}
+            >
+              {method.id === 'native' ? (selectedNetwork === 'eth' ? 'ETH' : 'BNB') : method.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Amount Input */}
       <div className="space-y-3 mb-6">
         <div className="relative">
@@ -130,10 +251,11 @@ export const PresaleCard = () => {
             placeholder="0.0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="bg-muted/50 border-border/50 h-14 text-lg pr-16"
+            disabled={status === 'purchasing' || status === 'approving'}
+            className="bg-muted/50 border-border/50 h-14 text-lg pr-20 disabled:opacity-50"
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">
-            {networks.find((n) => n.id === selectedNetwork)?.name}
+            {getPaymentLabel()}
           </span>
         </div>
         <div className="flex justify-between text-sm px-1">
@@ -145,10 +267,23 @@ export const PresaleCard = () => {
       {/* Connect/Buy Button */}
       {isConnected ? (
         <Button 
-          className="w-full h-14 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-lg hover:opacity-90 transition-opacity"
-          disabled={!amount || parseFloat(amount) <= 0}
+          onClick={handlePurchase}
+          className="w-full h-14 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+          disabled={!amount || parseFloat(amount) <= 0 || status === 'purchasing' || status === 'approving'}
         >
-          Buy $SEQ
+          {status === 'approving' && (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Approving...
+            </>
+          )}
+          {status === 'purchasing' && (
+            <>
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              Processing...
+            </>
+          )}
+          {status === 'idle' && 'Buy $SEQ'}
         </Button>
       ) : (
         <ConnectWalletButton variant="presale" />
@@ -156,7 +291,7 @@ export const PresaleCard = () => {
 
       {/* Info */}
       <p className="text-xs text-muted-foreground text-center mt-4">
-        Min: 0.01 {networks.find((n) => n.id === selectedNetwork)?.name} • Max: 50 {networks.find((n) => n.id === selectedNetwork)?.name}
+        Min: $10 • Max: $50,000
       </p>
     </div>
   );
