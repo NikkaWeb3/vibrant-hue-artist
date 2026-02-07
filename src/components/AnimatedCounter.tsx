@@ -19,6 +19,7 @@ export const AnimatedCounter = ({
 }: AnimatedCounterProps) => {
   const [count, setCount] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   const hasAnimated = useRef(false);
 
@@ -30,19 +31,34 @@ export const AnimatedCounter = ({
           hasAnimated.current = true;
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.1, rootMargin: "50px" }
     );
 
     if (ref.current) {
       observer.observe(ref.current);
     }
 
-    return () => observer.disconnect();
+    // Fallback: if element is already visible on mount, trigger animation
+    const timer = setTimeout(() => {
+      if (ref.current && !hasAnimated.current) {
+        const rect = ref.current.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          setIsVisible(true);
+          hasAnimated.current = true;
+        }
+      }
+    }, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
     if (!isVisible) return;
 
+    setHasStarted(true);
     let startTime: number;
     let animationFrame: number;
 
@@ -73,9 +89,9 @@ export const AnimatedCounter = ({
   return (
     <span 
       ref={ref} 
-      className={`inline-block transition-all duration-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${className}`}
+      className={`inline-block transition-all duration-500 ${hasStarted ? 'opacity-100 translate-y-0' : 'opacity-100'} ${className}`}
     >
-      {prefix}{formattedValue}{suffix}
+      {prefix}{hasStarted ? formattedValue : '0'}{suffix}
     </span>
   );
 };
