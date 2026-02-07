@@ -44,7 +44,7 @@ export const ConnectWalletButton = ({
                       className={`w-full h-14 bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold text-lg hover:opacity-90 transition-opacity ${className}`}
                     >
                       <Wallet className="w-5 h-5 mr-2" />
-                      Connect Wallet
+                      Connect Wallet to Buy
                     </Button>
                   );
                 }
