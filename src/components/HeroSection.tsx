@@ -27,7 +27,7 @@ export const HeroSection = () => {
       {/* Unicorn Studio WebGL Background */}
       <div className="absolute inset-0 pointer-events-none">
         <UnicornScene 
-          projectId="eF2bJAYKGCdF8gPcSEbH" 
+          projectId="2yZxHAqrbbRFHovTmsYe"
           sdkUrl="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v2.0.5/dist/unicornStudio.umd.js"
           width="100%" 
           height="100%" 
