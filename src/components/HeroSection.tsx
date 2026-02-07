@@ -1,6 +1,7 @@
 import { PresaleCard } from "./PresaleCard";
 import { Shield, TrendingUp, Zap } from "lucide-react";
 import UnicornScene from "unicornstudio-react";
+import { AnimatedCounter } from "./AnimatedCounter";
 
 const features = [
   {
@@ -81,16 +82,22 @@ export const HeroSection = () => {
 
             {/* Stats */}
             <div className="flex flex-wrap justify-center lg:justify-start gap-8">
-              <div>
-                <p className="text-3xl lg:text-4xl font-bold gradient-text">$2M+</p>
+              <div className="group">
+                <p className="text-3xl lg:text-4xl font-bold gradient-text group-hover:scale-110 transition-transform">
+                  <AnimatedCounter end={2} prefix="$" suffix="M+" duration={1500} />
+                </p>
                 <p className="text-sm text-muted-foreground">Target TVL</p>
               </div>
-              <div>
-                <p className="text-3xl lg:text-4xl font-bold text-foreground">10K+</p>
+              <div className="group">
+                <p className="text-3xl lg:text-4xl font-bold text-foreground group-hover:scale-110 transition-transform">
+                  <AnimatedCounter end={10} suffix="K+" duration={1500} />
+                </p>
                 <p className="text-sm text-muted-foreground">Early Supporters</p>
               </div>
-              <div>
-                <p className="text-3xl lg:text-4xl font-bold text-foreground">50x</p>
+              <div className="group">
+                <p className="text-3xl lg:text-4xl font-bold text-foreground group-hover:scale-110 transition-transform">
+                  <AnimatedCounter end={50} suffix="x" duration={1500} />
+                </p>
                 <p className="text-sm text-muted-foreground">Potential ROI</p>
               </div>
             </div>
