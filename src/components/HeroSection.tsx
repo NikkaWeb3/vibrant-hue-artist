@@ -104,10 +104,10 @@ export const HeroSection = () => {
       </div>
 
       {/* Partner Logos Ticker */}
-      <div className="mt-16 lg:mt-24 overflow-hidden">
+      <div className="mt-16 lg:mt-24 w-full overflow-hidden">
         <div className="border-t border-b border-border/30 py-6">
-          <div className="flex animate-[slide-left_20s_linear_infinite] gap-16">
-            {["CertiK", "Chainlink", "CoinGecko", "CoinMarketCap", "DeFiLlama", "CertiK", "Chainlink", "CoinGecko"].map((partner, i) => (
+          <div className="flex w-max animate-marquee gap-16">
+            {["CertiK", "Chainlink", "CoinGecko", "CoinMarketCap", "DeFiLlama", "Uniswap", "PancakeSwap", "Raydium", "CertiK", "Chainlink", "CoinGecko", "CoinMarketCap", "DeFiLlama", "Uniswap", "PancakeSwap", "Raydium"].map((partner, i) => (
               <span key={i} className="text-muted-foreground/50 text-xl font-semibold whitespace-nowrap">
                 {partner}
               </span>
