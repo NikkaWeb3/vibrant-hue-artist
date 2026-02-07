@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.svg";
 
 export const Footer = () => {
   return (
@@ -8,9 +9,7 @@ export const Footer = () => {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">S</span>
-              </div>
+              <img src={logo} alt="Sequoia Protocol" className="w-8 h-8" />
               <span className="font-bold text-lg text-foreground">Sequoia Protocol</span>
             </div>
             <p className="text-muted-foreground text-sm max-w-md mb-4">

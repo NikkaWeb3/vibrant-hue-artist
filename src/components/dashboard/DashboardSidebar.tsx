@@ -1,5 +1,6 @@
 import { Home, Users, Gift, Settings, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import logo from "@/assets/logo.svg";
 
 type TabType = "dashboard" | "referral" | "settings";
 
@@ -42,10 +43,8 @@ export const DashboardSidebar = ({
         <div className="flex flex-col h-full p-4">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 px-3 py-4 mb-6">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm">S</span>
-            </div>
-            <span className="font-bold text-lg text-sidebar-foreground">Sequoia</span>
+            <img src={logo} alt="Sequoia Protocol" className="w-8 h-8" />
+            <span className="font-bold text-sidebar-foreground">Sequoia Protocol</span>
           </Link>
 
           {/* Navigation */}
