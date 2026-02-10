@@ -104,7 +104,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right Side - Presale Card */}
-          <div className="w-full lg:w-[672px] lg:flex-shrink-0">
+          <div className="w-full lg:w-auto lg:flex-shrink-0">
             <PresaleCard />
           </div>
         </div>
