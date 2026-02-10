@@ -167,7 +167,7 @@ export const PresaleCard = () => {
   // Error state
   if (status === 'error') {
     return (
-    <div className="glass-card p-6 lg:p-8 w-full max-w-2xl">
+    <div className="glass-card p-6 lg:p-8 w-full max-w-md">
         <div className="text-center py-8">
           <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-destructive" />
