@@ -186,7 +186,7 @@ export const PresaleCard = () => {
   }
 
   return (
-    <div className="glass-card p-6 lg:p-8 w-full max-w-2xl">
+    <div className="glass-card p-6 lg:p-8 w-full max-w-md">
       {/* Phase Badge */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
