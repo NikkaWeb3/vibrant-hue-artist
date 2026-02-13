@@ -112,9 +112,9 @@ export const HeroSection = () => {
 
       {/* Featured In Section */}
       <div className="mt-16 lg:mt-24 w-full">
-        <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-widest">Featured In</p>
-        <div className="border-t border-b border-border/30 py-6 overflow-hidden">
-          <div className="flex w-max animate-marquee gap-16">
+        <p className="text-center text-base text-muted-foreground mb-6 uppercase tracking-widest">Featured In</p>
+        <div className="border-t border-b border-border/30 py-8 overflow-hidden">
+          <div className="flex w-max animate-marquee gap-20">
             {[
               { name: "CoinTelegraph", icon: "📡" },
               { name: "Bitcoin.com", icon: "₿" },
@@ -130,8 +130,8 @@ export const HeroSection = () => {
               { name: "Bitcoinist", icon: "🪙" },
             ].map((partner, i) => (
               <div key={i} className="flex items-center gap-2 whitespace-nowrap">
-                <span className="text-2xl">{partner.icon}</span>
-                <span className="text-muted-foreground/60 text-lg font-semibold">{partner.name}</span>
+                <span className="text-3xl">{partner.icon}</span>
+                <span className="text-muted-foreground/60 text-xl font-semibold">{partner.name}</span>
               </div>
             ))}
           </div>
