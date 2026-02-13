@@ -104,7 +104,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right Side - Presale Card */}
-          <div className="w-full max-w-xl mx-auto lg:mx-0 lg:flex-shrink-0">
+          <div className="w-full max-w-sm mx-auto lg:mx-0 lg:flex-shrink-0">
             <PresaleCard />
           </div>
         </div>
