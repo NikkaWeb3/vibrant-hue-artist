@@ -1,63 +1,44 @@
 
-# План: Выравнивание текста и карточки + улучшение планшетной версии
+# Plan: Wider Card + "Featured In" Section + Fix Width Bug
 
-## Проблемы (видно на скриншотах)
-1. **Десктоп**: Текст слева начинается значительно ниже карточки справа -- нет вертикального выравнивания. Лишний левый отступ (`lg:pl-12 xl:pl-20`) сдвигает текст.
-2. **Десктоп**: Карточка визуально узковата относительно свободного пространства справа.
-3. **Планшет (834px)**: Макет переключается в колоночный режим (breakpoint `lg:1024px`), карточка не центрирована, выглядит криво.
+## 1. Fix the card width "bug" (screenshots 3 vs 4)
 
-## Решение
+The problem: on narrower desktop (below 1024px), the layout switches to column mode and the card stretches to full container width. On wider desktop, it shrinks to its natural size. This creates inconsistent card widths at different window sizes.
 
-### 1. Файл: `src/components/HeroSection.tsx`
+**Fix**: Set a consistent width on PresaleCard itself (not just max-width) so it looks the same in both modes.
 
-**Выравнивание текста и карточки:**
-- Изменить `items-center` на `items-start` для `lg` breakpoint, чтобы текст и карточка начинались на одном уровне сверху
-- Убрать лишний padding `lg:pl-12 xl:pl-20` из текстового блока (из предыдущего изменения)
-- Уменьшить gap между блоками с `lg:gap-20` до `lg:gap-12` для более компактного расположения
+### PresaleCard.tsx
+Change `max-w-lg` (512px) to `max-w-xl` (576px) to make the card wider (closer to reference 1), applied in all 3 states (idle, success, error).
 
-**Планшет -- добавить промежуточный breakpoint:**
-- Использовать `md` breakpoint (768px) для перехода в горизонтальный режим вместо `lg` (1024px), чтобы на планшете текст и карточка стояли рядом
-- Или: оставить вертикальный режим на планшете, но центрировать карточку
+### HeroSection.tsx (card wrapper, line 107)
+Change to: `w-full max-w-xl mx-auto lg:mx-0 lg:flex-shrink-0`
+- `max-w-xl` constrains the card to 576px in both column and row modes
+- Removes `lg:w-auto` which was causing the size inconsistency
 
-### 2. Файл: `src/components/PresaleCard.tsx`
+## 2. Add "Featured In" section (from reference 2)
 
-- Оставить `max-w-lg` (512px) -- это хороший размер
+Replace the current plain-text partner ticker with a styled "Featured In" section featuring logos and names like in the Dribbble reference:
 
-## Технические детали
+Partners to display: CoinTelegraph, Bitcoin.com, Yahoo Finance, Techopedia, CryptoNews, Bitcoinist
 
-### HeroSection.tsx -- строка 43:
-```
-// Было:
-<div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+### HeroSection.tsx (lines 113-124)
+Replace the current partner ticker with:
+- "Featured In" heading centered above
+- A row of partner names with decorative icon placeholders (using styled text logos since we don't have actual logo files)
+- Styled similarly to the reference: horizontal row, spaced evenly, muted colors
 
-// Станет:
-<div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-12">
-```
+## Technical Details
 
-### HeroSection.tsx -- строка 45:
-```
-// Было:
-<div className="flex-1 text-center lg:text-left lg:pl-12 xl:pl-20">
+### File: `src/components/PresaleCard.tsx`
+- Line 137: `max-w-lg` -> `max-w-xl`
+- Line 170: `max-w-lg` -> `max-w-xl`
+- Line 189: `max-w-lg` -> `max-w-xl`
 
-// Станет:
-<div className="flex-1 text-center lg:text-left lg:pt-8">
-```
+### File: `src/components/HeroSection.tsx`
+- Line 107: `w-full max-w-lg mx-auto lg:mx-0 lg:w-auto lg:flex-shrink-0` -> `w-full max-w-xl mx-auto lg:mx-0 lg:flex-shrink-0`
+- Lines 113-124: Replace partner ticker with "Featured In" section containing styled partner logos/names in a static centered row (no scrolling marquee), matching the reference design
 
-Добавляем `lg:pt-8` вместо бокового отступа, чтобы немного опустить текст от верхнего края и выровнять визуально с карточкой.
-
-### HeroSection.tsx -- строка 107 (контейнер карточки):
-```
-// Было:
-<div className="w-full lg:w-auto lg:flex-shrink-0">
-
-// Станет:
-<div className="w-full max-w-lg mx-auto lg:mx-0 lg:w-auto lg:flex-shrink-0">
-```
-
-Добавляем `max-w-lg mx-auto` чтобы карточка была центрирована в колоночном режиме (мобильный/планшет), а на десктопе (`lg:mx-0`) убираем центрирование.
-
-## Результат
-- На десктопе текст и карточка выровнены сверху
-- На планшете карточка центрирована
-- Убран лишний боковой сдвиг текста
-- Компактный gap между элементами
+## Result
+- Card is consistently 576px wide on all screen sizes (no more "bug")
+- Card is visually wider, closer to reference 1
+- "Featured In" section adds credibility with media partner names
