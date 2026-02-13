@@ -104,22 +104,21 @@ export const HeroSection = () => {
           </div>
 
           {/* Right Side - Presale Card */}
-          <div className="w-full max-w-lg mx-auto lg:mx-0 lg:w-auto lg:flex-shrink-0">
+          <div className="w-full max-w-xl mx-auto lg:mx-0 lg:flex-shrink-0">
             <PresaleCard />
           </div>
         </div>
       </div>
 
-      {/* Partner Logos Ticker */}
-      <div className="mt-16 lg:mt-24 w-full overflow-hidden">
-        <div className="border-t border-b border-border/30 py-6">
-          <div className="flex w-max animate-marquee gap-16">
-            {["CertiK", "Chainlink", "CoinGecko", "CoinMarketCap", "DeFiLlama", "Uniswap", "PancakeSwap", "Raydium", "CertiK", "Chainlink", "CoinGecko", "CoinMarketCap", "DeFiLlama", "Uniswap", "PancakeSwap", "Raydium"].map((partner, i) => (
-              <span key={i} className="text-muted-foreground/50 text-xl font-semibold whitespace-nowrap">
-                {partner}
-              </span>
-            ))}
-          </div>
+      {/* Featured In Section */}
+      <div className="mt-16 lg:mt-24 w-full">
+        <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-widest">Featured In</p>
+        <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+          {["CoinTelegraph", "Bitcoin.com", "Yahoo Finance", "Techopedia", "CryptoNews", "Bitcoinist"].map((name) => (
+            <span key={name} className="text-muted-foreground/60 text-lg font-semibold whitespace-nowrap hover:text-muted-foreground transition-colors">
+              {name}
+            </span>
+          ))}
         </div>
       </div>
     </section>
