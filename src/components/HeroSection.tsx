@@ -40,9 +40,9 @@ export const HeroSection = () => {
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-12">
           {/* Left Side - Content */}
-          <div className="flex-1 text-center lg:text-left lg:pl-12 xl:pl-20">
+          <div className="flex-1 text-center lg:text-left lg:pt-8">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-2 mb-6">
               <div className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
@@ -104,7 +104,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Right Side - Presale Card */}
-          <div className="w-full lg:w-auto lg:flex-shrink-0">
+          <div className="w-full max-w-lg mx-auto lg:mx-0 lg:w-auto lg:flex-shrink-0">
             <PresaleCard />
           </div>
         </div>
