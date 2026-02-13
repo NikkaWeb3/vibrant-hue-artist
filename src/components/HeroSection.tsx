@@ -113,12 +113,28 @@ export const HeroSection = () => {
       {/* Featured In Section */}
       <div className="mt-16 lg:mt-24 w-full">
         <p className="text-center text-sm text-muted-foreground mb-6 uppercase tracking-widest">Featured In</p>
-        <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
-          {["CoinTelegraph", "Bitcoin.com", "Yahoo Finance", "Techopedia", "CryptoNews", "Bitcoinist"].map((name) => (
-            <span key={name} className="text-muted-foreground/60 text-lg font-semibold whitespace-nowrap hover:text-muted-foreground transition-colors">
-              {name}
-            </span>
-          ))}
+        <div className="border-t border-b border-border/30 py-6 overflow-hidden">
+          <div className="flex w-max animate-marquee gap-16">
+            {[
+              { name: "CoinTelegraph", icon: "📡" },
+              { name: "Bitcoin.com", icon: "₿" },
+              { name: "Yahoo Finance", icon: "📈" },
+              { name: "Techopedia", icon: "⚙️" },
+              { name: "CryptoNews", icon: "📰" },
+              { name: "Bitcoinist", icon: "🪙" },
+              { name: "CoinTelegraph", icon: "📡" },
+              { name: "Bitcoin.com", icon: "₿" },
+              { name: "Yahoo Finance", icon: "📈" },
+              { name: "Techopedia", icon: "⚙️" },
+              { name: "CryptoNews", icon: "📰" },
+              { name: "Bitcoinist", icon: "🪙" },
+            ].map((partner, i) => (
+              <div key={i} className="flex items-center gap-2 whitespace-nowrap">
+                <span className="text-2xl">{partner.icon}</span>
+                <span className="text-muted-foreground/60 text-lg font-semibold">{partner.name}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
